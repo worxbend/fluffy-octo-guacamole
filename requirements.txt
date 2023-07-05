@@ -1,5 +1,5 @@
 aiofiles==22.1.0
-aioquic==0.9.20
+aioquic==0.9.21
 docker==6.0.1
 gunicorn==20.1.0
 requests==2.31.0
