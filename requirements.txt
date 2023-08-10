@@ -1,4 +1,4 @@
-aiofiles==22.1.0
+aiofiles==23.2.1
 aioquic==0.9.20
 docker==6.0.1
 gunicorn==20.1.0
