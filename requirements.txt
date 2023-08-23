@@ -13,6 +13,6 @@ tomli==2.0.1
 ujson==5.5.0
 urllib3==1.26.12
 uvloop==0.17.0
-websocket-client==1.4.1
+websocket-client==1.6.2
 websockets==11.0.1
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
