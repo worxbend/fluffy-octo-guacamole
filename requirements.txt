@@ -11,7 +11,7 @@ sanic-routing==22.8.0
 sanic-testing==23.3.0
 tomli==2.0.1
 ujson==5.5.0
-urllib3==1.26.12
+urllib3==1.26.18
 uvloop==0.17.0
 websocket-client==1.4.1
 websockets==11.0.1
