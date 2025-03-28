@@ -1,7 +1,7 @@
 aiofiles==22.1.0
 aioquic==0.9.20
 docker==6.0.1
-gunicorn==20.1.0
+gunicorn==23.0.0
 requests==2.32.0
 sanic==22.9.0
 sanic-ext==22.9.0
