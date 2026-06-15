@@ -2,15 +2,19 @@
 
 from __future__ import annotations
 
+from typing import Final
+
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_SECURE_API_TOKEN_MIN_LENGTH: Final = 8
 
 
 class Settings(BaseSettings):
     APP_HOST: str = Field(default="0.0.0.0")
     APP_PORT: int = Field(default=8080, ge=1, le=65535)
 
-    API_TOKEN: str = Field(default="", min_length=8)
+    API_TOKEN: str = Field(default="", min_length=_SECURE_API_TOKEN_MIN_LENGTH)
 
     ESP32_BASE_URL: str = Field(default="http://192.168.1.50")
     ESP32_TIMEOUT_SECONDS: float = Field(default=3.0, gt=0)
@@ -67,6 +71,15 @@ class Settings(BaseSettings):
                 "LOG_LEVEL must be one of DEBUG, INFO, WARNING, ERROR, CRITICAL, NOTSET"
             )
         return normalized
+
+    @field_validator("API_TOKEN")
+    @classmethod
+    def _validate_api_token(cls, value: str) -> str:
+        if value.strip() == "":
+            raise ValueError("API_TOKEN must not be blank")
+        if len(value) < _SECURE_API_TOKEN_MIN_LENGTH:
+            raise ValueError("API_TOKEN must be at least 8 characters long")
+        return value
 
 
 def load_settings() -> Settings:

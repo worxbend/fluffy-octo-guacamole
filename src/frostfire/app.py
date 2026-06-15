@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 
 import httpx
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 from frostfire import __version__
 from frostfire.api.errors import add_error_handlers
@@ -97,6 +98,21 @@ def create_app(
 
     add_error_handlers(app)
     app.add_middleware(RequestIDMiddleware)
+
+    if app_settings.CORS_ENABLED:
+        allowed_origins = [
+            origin.strip()
+            for origin in app_settings.CORS_ALLOWED_ORIGINS.split(",")
+            if origin.strip()
+        ]
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=allowed_origins or ["*"],
+            allow_methods=["*"],
+            allow_headers=["*"],
+            allow_credentials=False,
+        )
+
     app.include_router(create_health_router(service="frostfire-backend", version=__version__))
     app.include_router(create_readiness_router())
     app.include_router(create_api_router())
