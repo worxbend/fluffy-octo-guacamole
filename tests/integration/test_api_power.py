@@ -94,6 +94,7 @@ def test_power_press_requires_authentication() -> None:
     with TestClient(app) as client:
         response = client.post("/api/v1/power/press")
     assert response.status_code == 401
+    assert response.json()["error"]["code"] == "unauthorized"
 
 
 def test_power_press_rejects_invalid_token() -> None:
@@ -104,6 +105,7 @@ def test_power_press_rejects_invalid_token() -> None:
             headers={"Authorization": "Bearer bad-token"},
         )
     assert response.status_code == 403
+    assert response.json()["error"]["code"] == "forbidden"
 
 
 def test_power_press_with_valid_token_executes() -> None:
