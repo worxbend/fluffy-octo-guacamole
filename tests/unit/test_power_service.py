@@ -86,3 +86,29 @@ async def test_concurrent_commands_fail_fast() -> None:
     esp32.allow.set()
     result = await task_a
     assert result.action == PowerAction.PRESS
+
+
+@pytest.mark.asyncio
+async def test_idempotent_key_reuses_cached_result() -> None:
+    esp32 = FakeEsp32Client()
+    policy = SafetyPolicy(min_command_interval_seconds=0.0, command_lock_timeout_seconds=1.0)
+    service = PowerService(
+        esp32_client=esp32,
+        safety_policy=policy,
+        power_press_duration_ms=500,
+        force_off_press_duration_ms=5000,
+        idempotency_ttl_seconds=10.0,
+    )
+    esp32.allow.set()
+
+    first = await service.execute_power_action(
+        PowerAction.PRESS,
+        idempotency_key="abc123",
+    )
+    second = await service.execute_power_action(
+        PowerAction.PRESS,
+        idempotency_key="abc123",
+    )
+
+    assert second == first
+    assert esp32.calls == [500]

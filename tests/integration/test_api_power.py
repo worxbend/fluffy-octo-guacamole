@@ -65,7 +65,11 @@ def _settings() -> Settings:
     )
 
 
-def _app_with_fake_power_service(esp32_client: FakeEsp32Client) -> object:
+def _app_with_fake_power_service(
+    esp32_client: FakeEsp32Client,
+    *,
+    idempotency_ttl_seconds: float = 0.0,
+) -> object:
     policy = SafetyPolicy(
         min_command_interval_seconds=0.0,
         command_lock_timeout_seconds=0.05,
@@ -75,6 +79,7 @@ def _app_with_fake_power_service(esp32_client: FakeEsp32Client) -> object:
         safety_policy=policy,
         power_press_duration_ms=500,
         force_off_press_duration_ms=5000,
+        idempotency_ttl_seconds=idempotency_ttl_seconds,
     )
     app_settings = _settings()
     fake_device_service = FakeStatusService()
@@ -159,5 +164,30 @@ async def test_concurrent_power_commands() -> None:
         assert second_response.json()["error"]["code"] == "command_in_progress"
 
         fake_esp32.allow.set()
-        first_response = await first
-        assert first_response.status_code == 200
+    first_response = await first
+    assert first_response.status_code == 200
+
+
+def test_power_press_idempotency_key_reuses_cached_command() -> None:
+    fake_esp32 = FakeEsp32Client()
+    fake_esp32.allow.set()
+    app = _app_with_fake_power_service(fake_esp32, idempotency_ttl_seconds=10.0)
+    headers = {
+        "Authorization": "Bearer test-token",
+        "Idempotency-Key": "abc123",
+    }
+
+    with TestClient(app) as client:
+        first_response = client.post(
+            "/api/v1/power/press",
+            headers=headers,
+        )
+        second_response = client.post(
+            "/api/v1/power/press",
+            headers=headers,
+        )
+
+    assert first_response.status_code == 200
+    assert second_response.status_code == 200
+    assert first_response.json() == second_response.json()
+    assert fake_esp32.calls == [500]

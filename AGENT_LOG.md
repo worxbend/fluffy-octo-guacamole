@@ -33,3 +33,10 @@
 2026-06-15T22:04:41Z iteration 6 completed: added optional CORS middleware wiring from configuration and hardened API token validation against blank tokens; added integration coverage for preflight CORS behavior.
 2026-06-15T22:04:41Z iteration 6 validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (30 tests).
 2026-06-15T22:04:41Z iteration 6 completed validation_status=0
+2026-06-15T22:04:44Z iteration 6 committed checkpoint
+2026-06-15T22:04:44Z iteration 6 completed validation_status=0
+2026-06-15T22:04:44Z iteration 7 started remaining=17113s
+2026-06-15T22:06:50Z iteration 7 completed: implemented optional idempotency-key support for mutating power commands with in-memory TTL cache and end-to-end test coverage.
+2026-06-15T22:06:50Z iteration 7 validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (32 tests).
+2026-06-15T22:06:50Z iteration 7 committed checkpoint
+2026-06-15T22:06:50Z iteration 7 completed validation_status=0

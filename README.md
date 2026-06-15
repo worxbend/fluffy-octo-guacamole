@@ -72,6 +72,7 @@ Important settings:
 - `FORCE_OFF_PRESS_DURATION_MS` (destructive long press)
 - `MIN_COMMAND_INTERVAL_SECONDS`
 - `COMMAND_LOCK_TIMEOUT_SECONDS`
+- `IDEMPOTENCY_TTL_SECONDS` (optional idempotent duplicate protection for power commands, default `0`)
 - `LOG_LEVEL`
 
 ## Running

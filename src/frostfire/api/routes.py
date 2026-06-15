@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, Header, Request, status
 from fastapi.responses import PlainTextResponse
 
 from frostfire.api.dependencies import (
@@ -70,9 +70,11 @@ def create_power_router() -> APIRouter:
     async def press(
         request: Request,
         power_service: Annotated[PowerService, Depends(get_power_service)],
+        idempotency_key: Annotated[str | None, Header(alias="Idempotency-Key")] = None,
     ) -> PowerCommandResponse:
         result = await power_service.execute_power_action(
             PowerAction.PRESS,
+            idempotency_key=idempotency_key,
             request_id=getattr(request.state, "request_id", None),
         )
         return PowerCommandResponse.model_validate(result.model_dump())
@@ -86,10 +88,12 @@ def create_power_router() -> APIRouter:
         request: Request,
         payload: ForceOffRequest,
         power_service: Annotated[PowerService, Depends(get_power_service)],
+        idempotency_key: Annotated[str | None, Header(alias="Idempotency-Key")] = None,
     ) -> PowerCommandResponse:
         result = await power_service.execute_power_action(
             PowerAction.FORCE_OFF,
             confirm=payload.confirm,
+            idempotency_key=idempotency_key,
             request_id=getattr(request.state, "request_id", None),
         )
         return PowerCommandResponse.model_validate(result.model_dump())

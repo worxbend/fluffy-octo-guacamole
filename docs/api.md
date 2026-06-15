@@ -147,6 +147,18 @@ Response:
 }
 ```
 
+### Idempotency (optional)
+
+Provide `Idempotency-Key` on mutating power commands to protect against accidental duplicates within a short window.
+
+```bash
+curl -X POST http://localhost:8080/api/v1/power/press \
+  -H "Authorization: Bearer $FROSTFIRE_API_TOKEN" \
+  -H "Idempotency-Key: <uuid>"
+```
+
+When a key is reused and the previous result is still within cache retention, the backend returns the prior response without triggering a second relay pulse.
+
 ## Force off
 
 ### `POST /api/v1/power/force-off`

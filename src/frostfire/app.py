@@ -66,6 +66,7 @@ def create_app(
                 power_press_duration_ms=app_settings.POWER_PRESS_DURATION_MS,
                 force_off_press_duration_ms=app_settings.FORCE_OFF_PRESS_DURATION_MS,
                 metrics=app_metrics,
+                idempotency_ttl_seconds=app_settings.IDEMPOTENCY_TTL_SECONDS,
             )
             active_device_service = active_device_service or DeviceService(
                 esp32_client=managed_esp32_client,

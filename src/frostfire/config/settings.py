@@ -24,6 +24,7 @@ class Settings(BaseSettings):
 
     MIN_COMMAND_INTERVAL_SECONDS: float = Field(default=2.0, ge=0)
     COMMAND_LOCK_TIMEOUT_SECONDS: float = Field(default=10.0, ge=0)
+    IDEMPOTENCY_TTL_SECONDS: float = Field(default=0.0, ge=0)
 
     LOG_LEVEL: str = Field(default="INFO")
 
