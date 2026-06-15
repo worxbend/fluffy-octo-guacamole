@@ -11,13 +11,19 @@ from fastapi import FastAPI
 from frostfire import __version__
 from frostfire.api.errors import add_error_handlers
 from frostfire.api.middleware import RequestIDMiddleware
-from frostfire.api.routes import create_api_router, create_health_router, create_readiness_router
+from frostfire.api.routes import (
+    create_api_router,
+    create_health_router,
+    create_metrics_router,
+    create_readiness_router,
+)
 from frostfire.application.device_service import DeviceService
 from frostfire.application.power_service import PowerService
 from frostfire.application.safety_policy import SafetyPolicy
 from frostfire.config.settings import Settings, load_settings
 from frostfire.infrastructure.esp32_client import Esp32Client
 from frostfire.infrastructure.logging import configure_logging
+from frostfire.infrastructure.metrics import Metrics
 
 
 def create_app(
@@ -29,6 +35,7 @@ def create_app(
     app_settings = settings or load_settings()
 
     configure_logging(app_settings)
+    app_metrics = Metrics()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -46,6 +53,7 @@ def create_app(
             managed_esp32_client = Esp32Client(
                 base_url=app_settings.ESP32_BASE_URL,
                 client=managed_http_client,
+                metrics=app_metrics,
             )
             managed_safety_policy = SafetyPolicy(
                 min_command_interval_seconds=app_settings.MIN_COMMAND_INTERVAL_SECONDS,
@@ -56,11 +64,13 @@ def create_app(
                 safety_policy=managed_safety_policy,
                 power_press_duration_ms=app_settings.POWER_PRESS_DURATION_MS,
                 force_off_press_duration_ms=app_settings.FORCE_OFF_PRESS_DURATION_MS,
+                metrics=app_metrics,
             )
             active_device_service = active_device_service or DeviceService(
                 esp32_client=managed_esp32_client,
                 device_name=app_settings.DEVICE_NAME,
                 esp32_base_url=app_settings.ESP32_BASE_URL,
+                metrics=app_metrics,
             )
 
         # make shared state available for handlers/dependencies
@@ -68,6 +78,7 @@ def create_app(
         app.state.power_service = active_power_service
         app.state.device_service = active_device_service
         app.state.esp32_client = managed_esp32_client
+        app.state.metrics = app_metrics
         app.state.safety_policy = managed_safety_policy
 
         yield
@@ -86,7 +97,8 @@ def create_app(
 
     add_error_handlers(app)
     app.add_middleware(RequestIDMiddleware)
-    app.include_router(create_health_router(service="frostfire-backend", version="0.1.0"))
+    app.include_router(create_health_router(service="frostfire-backend", version=__version__))
     app.include_router(create_readiness_router())
     app.include_router(create_api_router())
+    app.include_router(create_metrics_router())
     return app

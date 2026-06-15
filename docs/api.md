@@ -76,6 +76,26 @@ Offline response:
 }
 ```
 
+## Metrics
+
+### `GET /metrics`
+
+Exposes basic Prometheus-formatted counters and gauges.
+
+```bash
+curl -i http://localhost:8080/metrics
+```
+
+Returned metric names include:
+
+- `frostfire_requests_total`
+- `frostfire_power_commands_total`
+- `frostfire_power_command_failures_total`
+- `frostfire_esp32_request_duration_seconds`
+- `frostfire_esp32_request_duration_seconds_count`
+- `frostfire_esp32_request_duration_seconds_sum`
+- `frostfire_esp32_online`
+
 ## Device status
 
 ### `GET /api/v1/device/status`

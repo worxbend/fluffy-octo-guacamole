@@ -13,3 +13,10 @@
 2026-06-15T22:00:38Z iteration 3 completed: implemented phase-6 documentation set (README + api/deployment/esp32/security docs), added LICENSE, and stabilized auth error responses to stable JSON format; added auth error schema assertions to integration tests.
 2026-06-15T22:00:38Z iteration 3 validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (28 tests).
 2026-06-15T22:00:38Z iteration 3 completed validation_status=0
+2026-06-15T22:00:46Z iteration 3 no changes to commit
+2026-06-15T22:00:46Z iteration 3 completed validation_status=0
+2026-06-15T22:00:46Z iteration 4 started remaining=17352s
+2026-06-16T01:03:00Z iteration 4 completed: added lightweight in-process Prometheus-style metrics pipeline (request counter, power command counters/failures, ESP32 request duration, ESP32 online gauge), wired to request middleware, power service, ESP32 client, and readiness path. Added /metrics route and integration test coverage.
+2026-06-16T01:03:00Z validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (29 tests).
+2026-06-16T01:03:00Z iteration 4 committed checkpoint
+2026-06-16T01:03:00Z iteration 4 completed validation_status=0

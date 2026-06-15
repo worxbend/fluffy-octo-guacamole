@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request, status
+from fastapi.responses import PlainTextResponse
 
 from frostfire.api.dependencies import (
     get_device_service,
@@ -21,6 +22,7 @@ from frostfire.api.schemas import (
 from frostfire.application.device_service import DeviceService
 from frostfire.application.power_service import PowerService
 from frostfire.domain.enums import PowerAction
+from frostfire.infrastructure.metrics import Metrics
 
 
 def create_health_router(*, service: str, version: str) -> APIRouter:
@@ -99,4 +101,17 @@ def create_api_router() -> APIRouter:
     router = APIRouter(prefix="/api/v1")
     router.include_router(create_device_router())
     router.include_router(create_power_router())
+    return router
+
+
+def create_metrics_router() -> APIRouter:
+    router = APIRouter()
+
+    @router.get("/metrics", response_class=PlainTextResponse, include_in_schema=False)
+    async def metrics(request: Request) -> str:
+        app_metrics = getattr(request.app.state, "metrics", None)
+        if not isinstance(app_metrics, Metrics):
+            return "# no metrics collector configured\n"
+        return app_metrics.render_prometheus()
+
     return router

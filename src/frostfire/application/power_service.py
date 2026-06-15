@@ -8,6 +8,7 @@ from frostfire.domain.enums import PowerAction
 from frostfire.domain.errors import CommandRejectedError
 from frostfire.domain.models import PowerCommandResult
 from frostfire.infrastructure.esp32_client import Esp32Client
+from frostfire.infrastructure.metrics import Metrics
 
 from .safety_policy import SafetyPolicy
 
@@ -20,11 +21,13 @@ class PowerService:
         safety_policy: SafetyPolicy,
         power_press_duration_ms: int,
         force_off_press_duration_ms: int,
+        metrics: Metrics | None = None,
     ) -> None:
         self._esp32_client = esp32_client
         self._safety_policy = safety_policy
         self._power_press_duration_ms = power_press_duration_ms
         self._force_off_press_duration_ms = force_off_press_duration_ms
+        self._metrics = metrics
 
     async def execute_power_action(
         self,
@@ -41,10 +44,17 @@ class PowerService:
             confirm=confirm,
         )
 
-        async with self._safety_policy.command_lock():
-            raw_result = await self._esp32_client.pulse_relay(duration_ms=duration_ms)
+        try:
+            async with self._safety_policy.command_lock():
+                raw_result = await self._esp32_client.pulse_relay(duration_ms=duration_ms)
+        except Exception:
+            if self._metrics is not None:
+                self._metrics.record_power_command_failure()
+            raise
 
         self._safety_policy.mark_last_successful_command()
+        if self._metrics is not None:
+            self._metrics.record_power_command_total()
 
         accepted = bool(raw_result.get("accepted", False))
         executed = accepted
@@ -58,6 +68,7 @@ class PowerService:
             action=action.value,
             duration_ms=duration,
             result=raw_result,
+            esp32_status="online",
         )
 
         return PowerCommandResult(

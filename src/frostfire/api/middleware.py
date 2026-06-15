@@ -11,6 +11,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 from structlog import get_logger
 
+from frostfire.infrastructure.metrics import Metrics
+
 
 class RequestIDMiddleware(BaseHTTPMiddleware):
     """Attach request IDs and log basic request metrics."""
@@ -22,6 +24,9 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
     ) -> Response:
         request_id = request.headers.get("X-Request-ID") or str(uuid4())
         request.state.request_id = request_id
+        app_metrics = getattr(request.app.state, "metrics", None)
+        if isinstance(app_metrics, Metrics):
+            app_metrics.record_request()
 
         start = perf_counter()
         response = await call_next(request)
