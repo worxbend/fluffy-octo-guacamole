@@ -10,7 +10,7 @@ from frostfire.config.settings import load_settings
 
 def main() -> None:
     app_settings = load_settings()
-    app = create_app()
+    app = create_app(app_settings)
     uvicorn.run(
         app,
         host=app_settings.APP_HOST,

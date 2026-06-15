@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     APP_HOST: str = Field(default="0.0.0.0")
     APP_PORT: int = Field(default=8080, ge=1, le=65535)
 
-    API_TOKEN: str = Field(default="change-me", min_length=8)
+    API_TOKEN: str = Field(default="", min_length=8)
 
     ESP32_BASE_URL: str = Field(default="http://192.168.1.50")
     ESP32_TIMEOUT_SECONDS: float = Field(default=3.0, gt=0)
