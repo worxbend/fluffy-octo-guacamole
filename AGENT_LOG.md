@@ -47,3 +47,9 @@
 2026-06-15T22:08:18Z iteration 8 validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (33 tests).
 2026-06-15T22:08:18Z iteration 8 completed validation_status=0
 2026-06-15T22:08:18Z iteration 8 committed checkpoint
+2026-06-15T22:08:29Z iteration 8 no changes to commit
+2026-06-15T22:08:29Z iteration 8 completed validation_status=0
+2026-06-15T22:08:29Z iteration 9 started remaining=16889s
+2026-06-15T22:09:10Z iteration 9 completed: documented ENABLE_OPENAPI_DOCS and related config visibility updates in user-facing setup docs.
+2026-06-15T22:09:10Z validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (33 tests).
+2026-06-15T22:09:10Z iteration 9 completed validation_status=0
