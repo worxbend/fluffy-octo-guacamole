@@ -6,7 +6,12 @@ import pytest
 
 from frostfire.application.safety_policy import SafetyPolicy
 from frostfire.domain.enums import PowerAction
-from frostfire.domain.errors import CommandInProgressError, CommandRejectedError, UnsafeCommandError
+from frostfire.domain.errors import (
+    CommandInProgressError,
+    CommandRejectedError,
+    ConfirmationRequiredError,
+    UnsafeCommandError,
+)
 
 
 def test_allows_first_command() -> None:
@@ -61,7 +66,7 @@ def test_requires_confirmation_for_force_off() -> None:
         min_command_interval_seconds=2.0,
         command_lock_timeout_seconds=1.0,
     )
-    with pytest.raises(UnsafeCommandError):
+    with pytest.raises(ConfirmationRequiredError):
         policy.validate_power_action(action=PowerAction.FORCE_OFF, duration_ms=5000, confirm=False)
 
 

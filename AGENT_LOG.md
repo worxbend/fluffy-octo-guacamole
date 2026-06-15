@@ -20,3 +20,10 @@
 2026-06-16T01:03:00Z validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (29 tests).
 2026-06-16T01:03:00Z iteration 4 committed checkpoint
 2026-06-16T01:03:00Z iteration 4 completed validation_status=0
+2026-06-15T22:03:04Z iteration 4 no changes to commit
+2026-06-15T22:03:04Z iteration 4 completed validation_status=0
+2026-06-15T22:03:04Z iteration 5 started remaining=17213s
+2026-06-15T22:03:51Z iteration 5 completed: aligned missing force-off confirmation error to dedicated `confirmation_required` domain error and updated tests/docs.
+2026-06-15T22:03:51Z validation: uv run ruff format --check ., uv run ruff check ., uv run mypy src, uv run pytest, uv run coverage run -m pytest, uv run coverage report all passed (29 tests).
+2026-06-15T22:03:51Z iteration 5 committed checkpoint
+2026-06-15T22:03:51Z iteration 5 completed validation_status=0

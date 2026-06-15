@@ -134,7 +134,7 @@ def test_force_off_requires_confirmation() -> None:
         )
     payload = response.json()
     assert response.status_code == 422
-    assert payload["error"]["code"] == "unsafe_command"
+    assert payload["error"]["code"] == "confirmation_required"
 
 
 @pytest.mark.asyncio

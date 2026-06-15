@@ -8,7 +8,12 @@ from contextlib import asynccontextmanager
 from time import monotonic
 
 from frostfire.domain.enums import PowerAction
-from frostfire.domain.errors import CommandInProgressError, CommandRejectedError, UnsafeCommandError
+from frostfire.domain.errors import (
+    CommandInProgressError,
+    CommandRejectedError,
+    ConfirmationRequiredError,
+    UnsafeCommandError,
+)
 
 
 class SafetyPolicy:
@@ -45,7 +50,7 @@ class SafetyPolicy:
                     f"force-off duration must be between 3000 and 10000 ms, got {duration_ms}"
                 )
             if not confirm:
-                raise UnsafeCommandError("force-off requires confirm=true")
+                raise ConfirmationRequiredError("force-off requires confirm=true")
         else:
             raise CommandRejectedError(f"unsupported action: {action}")
 

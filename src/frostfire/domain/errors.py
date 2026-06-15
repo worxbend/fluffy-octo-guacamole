@@ -38,6 +38,12 @@ class UnsafeCommandError(FrostfireError):
     http_status = 422
 
 
+class ConfirmationRequiredError(UnsafeCommandError):
+    """Raised when a destructive command needs explicit confirmation."""
+
+    code = "confirmation_required"
+
+
 class DeviceProtocolError(FrostfireError):
     """Raised when the ESP32 returns an unexpected response."""
 

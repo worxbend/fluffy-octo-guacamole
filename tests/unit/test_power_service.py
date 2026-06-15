@@ -7,7 +7,7 @@ import pytest
 from frostfire.application.power_service import PowerService
 from frostfire.application.safety_policy import SafetyPolicy
 from frostfire.domain.enums import PowerAction
-from frostfire.domain.errors import CommandInProgressError, UnsafeCommandError
+from frostfire.domain.errors import CommandInProgressError, ConfirmationRequiredError
 
 
 class FakeEsp32Client:
@@ -61,7 +61,7 @@ async def test_force_off_requires_confirmation() -> None:
     )
     esp32.allow.set()
 
-    with pytest.raises(UnsafeCommandError):
+    with pytest.raises(ConfirmationRequiredError):
         await service.execute_power_action(PowerAction.FORCE_OFF, confirm=False)
 
 

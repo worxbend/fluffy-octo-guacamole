@@ -21,6 +21,7 @@ Common codes:
 - `unauthorized` (401)
 - `forbidden` (403)
 - `unsafe_command` (422)
+- `confirmation_required` (422)
 - `command_in_progress` (409)
 - `bad_request` (400)
 - `device_unavailable` (503)
@@ -164,7 +165,7 @@ Missing confirmation response:
 ```json
 {
   "error": {
-    "code": "unsafe_command",
+    "code": "confirmation_required",
     "message": "force-off requires confirm=true",
     "details": {}
   }
