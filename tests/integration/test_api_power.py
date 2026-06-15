@@ -142,6 +142,21 @@ def test_force_off_requires_confirmation() -> None:
     assert payload["error"]["code"] == "confirmation_required"
 
 
+def test_power_request_rejects_oversized_payload() -> None:
+    app = _app_with_fake_power_service(FakeEsp32Client())
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/power/force-off",
+            headers={"Authorization": "Bearer test-token"},
+            json={
+                "confirm": True,
+                "payload": "x" * 12_000,
+            },
+        )
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "bad_request"
+
+
 @pytest.mark.asyncio
 async def test_concurrent_power_commands() -> None:
     fake_esp32 = FakeEsp32Client()

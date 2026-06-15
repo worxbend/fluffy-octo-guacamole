@@ -73,6 +73,7 @@ Important settings:
 - `MIN_COMMAND_INTERVAL_SECONDS`
 - `COMMAND_LOCK_TIMEOUT_SECONDS`
 - `IDEMPOTENCY_TTL_SECONDS` (optional idempotent duplicate protection for power commands, default `0`)
+- `MAX_REQUEST_BODY_BYTES` (payload limit in bytes, default `10240`)
 - `LOG_LEVEL`
 
 ## Running

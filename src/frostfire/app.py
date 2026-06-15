@@ -11,7 +11,10 @@ from starlette.middleware.cors import CORSMiddleware
 
 from frostfire import __version__
 from frostfire.api.errors import add_error_handlers
-from frostfire.api.middleware import RequestIDMiddleware
+from frostfire.api.middleware import (
+    RequestIDMiddleware,
+    RequestSizeLimitMiddleware,
+)
 from frostfire.api.routes import (
     create_api_router,
     create_health_router,
@@ -99,6 +102,10 @@ def create_app(
 
     add_error_handlers(app)
     app.add_middleware(RequestIDMiddleware)
+    app.add_middleware(
+        RequestSizeLimitMiddleware,
+        max_body_size=app_settings.MAX_REQUEST_BODY_BYTES,
+    )
 
     if app_settings.CORS_ENABLED:
         allowed_origins = [

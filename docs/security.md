@@ -10,6 +10,7 @@ Frostfire acts on physical hardware. Treat this service as sensitive infrastruct
 - Bounded relay durations and minimum interval checks in service policy.
 - No retry of relay pulse commands by default.
 - Request and response logging with request IDs but without secret values.
+- Payload size bound enforced by request body limit.
 
 ## Operational guidance
 

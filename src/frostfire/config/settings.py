@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     ENABLE_AUDIT_LOG: bool = Field(default=True)
     ENABLE_OPENAPI_DOCS: bool = Field(default=False)
     DEVICE_NAME: str = Field(default="frostfire-esp32-main-pc")
+    MAX_REQUEST_BODY_BYTES: int = Field(default=10_240, gt=0, le=1_048_576)
 
     model_config = SettingsConfigDict(
         env_prefix="",
