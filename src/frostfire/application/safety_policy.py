@@ -59,6 +59,9 @@ class SafetyPolicy:
 
     @asynccontextmanager
     async def command_lock(self) -> AsyncIterator[None]:
+        if self._lock.locked():
+            raise CommandInProgressError("another command is already in progress")
+
         try:
             await asyncio.wait_for(self._lock.acquire(), timeout=self._command_lock_timeout_seconds)
         except TimeoutError as exc:

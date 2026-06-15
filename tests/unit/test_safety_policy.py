@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
+from time import monotonic
 
 import pytest
 
@@ -89,3 +91,31 @@ async def test_prevents_concurrent_commands() -> None:
         async with policy.command_lock():
             pass
     await task
+
+
+@pytest.mark.asyncio
+async def test_prevents_concurrent_commands_fast_fail() -> None:
+    policy = SafetyPolicy(
+        min_command_interval_seconds=0.0,
+        command_lock_timeout_seconds=5.0,
+    )
+    started = asyncio.Event()
+
+    async def run_first() -> None:
+        async with policy.command_lock():
+            started.set()
+            await asyncio.sleep(5.0)
+
+    task = asyncio.create_task(run_first())
+    await started.wait()
+
+    start = monotonic()
+    with pytest.raises(CommandInProgressError):
+        async with policy.command_lock():
+            pass
+    duration = monotonic() - start
+
+    assert duration < 0.5
+    task.cancel()
+    with contextlib.suppress(asyncio.CancelledError):
+        await task
